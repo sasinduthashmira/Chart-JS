@@ -21,20 +21,15 @@
 <!--script line chart -->
 <script>
 
-const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
-const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
+
 
   const data = {
     labels: [1995,1996,1997,1998,1999,2000,2001],
     datasets: [{ 
-        data: [65, 59, NaN, 48, 56, 57, 40],
-        label: "value",
+        data: [65, 59, 50, 48, 56, 57, 40],
+        label: "Student",
         borderColor: "#3e95cd",
-        segment: {
-        borderColor: ctx => skipped(ctx, 'rgb(0,0,0,0.2)') || down(ctx, 'rgb(192,75,75)'),
-        borderDash: ctx => skipped(ctx, [6, 6]),
-      },
-      spanGaps: true
+        stepped: "middle" //   add stepped
       }
     ]
   };
@@ -48,13 +43,6 @@ const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefin
     }
   };
 
-  const genericOptions = {
-  fill: false,
-  interaction: {
-    intersect: false
-  },
-  radius: 0,
-};
 
   const myChart = new Chart(
     document.getElementById('myChart'),
