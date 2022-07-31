@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+     <!-- link boostrap-->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+
+<body class="bg-secondary">
+    <div class ="col-md-6 offset-md-3 my-5">
+        <div class="card ">
+            <canvas id="BubbleChart"></canvas>
+        </div>
+    </div>
+
+
+    
+    <script>
+
+        //Setup Block
+        const data ={ labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# Bubble',
+                    data: [
+                        {x:1, y: 2, r: 3},       //r= point size(5,6,7.....)
+                        {x:2, y: 5, r: 5},
+                        {x:3, y: 18, r: 10},
+                        {x:4, y: 20, r: 2},
+                        {x:5, y: 4, r: 15},
+                        {x:7, y: 8, r: 8},
+                        {x:8, y: 4, r: 4},
+                        {x:6, y: 14, r: 7.5}
+                    ],
+                   backgroundColor(color){
+
+                    const value = color.raw.r;
+                    const min = 2;
+                    const max = 15;
+
+                    let clrValue =(min + value) / max ;
+                    if (clrValue > 1) {clrValue = 1;}
+                    return `rgba(255, 99, 132, ${clrValue})`;
+                    
+
+                   },
+                    borderColor: ['rgba(255, 99, 132, 1)'],
+                    borderWidth: 1,
+                    clip:false
+                }]
+
+        };
+
+        // colorScale 
+        const colorScale ={
+            id : 'colorScale',
+            afterDatasetsDraw(chart){
+                const {ctx, chartArea: {top, bottom, height, right }} = chart;
+                ctx.save();
+
+                const gradient = ctx.createLinearGradient(0,top,0,height); //x,y,w,h
+                gradient.addColorStop(0,'rgba(255, 99, 132, 1)');
+                gradient.addColorStop(1,'rgba(255, 99, 132, 0.2)');
+
+                ctx.fillStyle =gradient;
+                ctx.fillRect (right + 15,top,10,height) ;  // ctx.fillRect (x,y,w,h)
+                ctx.restore();
+
+                const radius =[];
+                chart.data.datasets[0].data.forEach((datapoint) => {
+                    //console.log(datapoint.r)
+                   radius.push(datapoint.r)
+                })
+
+                ctx.fillStyle = '#666';
+                ctx.textAlign='center'
+                ctx.fillText(Math.min(...radius), right + 15+(10/2), bottom +10);
+                ctx.fillText(Math.max(...radius), right + 15+(10/2), top -10);
+
+            }
+        }
+        //Config Block
+        const Config={
+            type: 'bubble',
+            data,
+            options: {
+                layout:{
+                    padding:{
+                        right: 60
+                    }
+
+                },
+              
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                
+                } 
+            },
+            plugins:[colorScale]
+        };
+
+        // Init Rander Block
+        const BarChart = new Chart(
+            document.getElementById('BubbleChart'),
+            Config
+        );
+
+
+    </script>
+</body>
+
+
